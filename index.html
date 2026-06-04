@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Butterfly Multiverse 🦋</title>
+    <style>
+        :root {
+            --bg-color: #0f0f12;
+            --card-bg: #1a1a24;
+            --accent-color: #9d4edd;
+            --text-color: #f8f9fa;
+            --button-hover: #7b2cbf;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .game-container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(157, 78, 221, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #a0a0ab;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            min-height: 90px;
+        }
+
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            padding: 15px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(157, 78, 221, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-restart {
+            background-color: var(--accent-color);
+            border: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .btn-restart:hover {
+            background-color: var(--button-hover);
+        }
+
+        .ending-badge {
+            display: inline-block;
+            background-color: #ff4757;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>The Butterfly Multiverse 🦋</h1>
+        <div class="subtitle">Pop Culture Deeper Interactive Game</div>
+        
+        <div id="game-content">
+            <p class="story-text" id="story">Loading game...</p>
+            <div class="choices-container" id="choices"></div>
+        </div>
+    </div>
+
+    <script>
+        const gameState = {
+            // LEVEL 1
+            start: {
+                text: "It’s Friday night. You are scrolling through Netflix and can't decide what to watch. What is your vibe?",
+                choices: [
+                    { text: "🧟 Watch a terrifying Zombie Movie.", next: "zombiePath" },
+                    { text: "🚀 Watch a mind-bending Sci-Fi Movie.", next: "scifiPath" }
+                ]
+            },
+            
+            // LEVEL 2 (Zombie Path)
+            zombiePath: {
+                text: "The movie was so scary! Suddenly, you hear a loud, creepy noise coming from your backyard. What do you do?",
+                choices: [
+                    { text: "🧹 Grab a broom and go check outside.", next: "broomPath" },
+                    { text: "🍕 Ignore it and order late-night pizza.", next: "pizzaPath" }
+                ]
+            },
+
+            // LEVEL 2 (Sci-Fi Path)
+            scifiPath: {
+                text: "The sci-fi movie ends. Suddenly, you notice a strange glowing USB drive on your desk that wasn't there before. What do you do?",
+                choices: [
+                    { text: "💻 Plug it into your laptop right now.", next: "usbPlugPath" },
+                    { text: "🪟 Throw it out the window immediately.", next: "usbThrowPath" }
+                ]
+            },
+
+            // LEVEL 3 (Broom Path)
+            broomPath: {
+                text: "You walk into the dark backyard and see a tall shadow hiding behind the trash cans. What is your move?",
+                choices: [
+                    { text: "🗣️ Yell 'Who's there?!' like a classic horror movie victim.", next: "ending1" },
+                    { text: "🎯 Throw the broom at the shadow and sprint back inside.", next: "ending2" }
+                ]
+            },
+
+            // LEVEL 3 (Pizza Path)
+            pizzaPath: {
+                text: "The delivery guy arrives in 10 minutes. But he's wearing a black trench coat and sunglasses at night. Super suspicious. What do you do?",
+                choices: [
+                    { text: "💵 Take the pizza and give him a huge cash tip.", next: "ending3" },
+                    { text: "🕶️ Look at him and say: 'Are you in the Matrix?'", next: "ending4" }
+                ]
+            },
+
+            // LEVEL 3 (USB Plug Path)
+            usbPlugPath: {
+                text: "Your laptop screen goes fully green and a mysterious countdown timer appears: 10, 9, 8... What do you do?",
+                choices: [
+                    { text: "🔨 Smash the power button to shut it down.", next: "ending5" },
+                    { text: "🕺 Do a victory dance because it looks cool.", next: "ending6" }
+                ]
+            },
+
+            // LEVEL 3 (USB Throw Path)
+            usbThrowPath: {
+                text: "You throw it! *CLANK!* It hits a passerby directly on the head. You look closely... OMG, it's your strict university professor walking his dog! What do you do?",
+                choices: [
+                    { text: "🫣 Hide behind the curtains and pretend you're dead.", next: "ending7" },
+                    { text: "🫵 Open the window and yell: 'Sorry, wrong timeline!'", next: "ending8" }
+                ]
+            },
+
+            // ENDINGS
+            ending1: {
+                text: "<span class='ending-badge'>Ending 1: The Avenger 🦅</span><br>The shadow steps out... It's Nick Fury! He says: 'I like your courage.' He recruits you into the Avengers. You missed your classes, but you are saving the universe now!",
+                isEnding: true
+            },
+            ending2: {
+                text: "<span class='ending-badge'>Ending 2: Hollywood Star 🎬</span><br>The broom hit a famous movie director who was filming a secret horror scene next door. He loved your panic and hired you as a stunt double. You are now a rich Hollywood celebrity!",
+                isEnding: true
+            },
+            ending3: {
+                text: "<span class='ending-badge'>Ending 3: The John Wick Respect 🐶</span><br>The delivery guy was actually John Wick undercover! Your generous tip funded his next mission. Out of respect, he names his next dog after you. You are officially safe forever.",
+                isEnding: true
+            },
+            ending4: {
+                text: "<span class='ending-badge'>Ending 4: Simulation Glitch 💊</span><br>He smiles, takes off his glasses, and hands you a Red Pill. You swallow it and wake up in a pod, realizing your entire life and university was just a computer simulation!",
+                isEnding: true
+            },
+            ending5: {
+                text: "<span class='ending-badge'>Ending 5: The Transformer 🤖</span><br>The laptop stops counting and transforms into a mini Autobot robot! It cleans your room and hacks the university server to give you straight A's for the rest of the year.",
+                isEnding: true
+            },
+            ending6: {
+                text: "<span class='ending-badge'>Ending 6: Global Rickroll 🎵</span><br>The countdown hits 0 and Rick Astley starts playing at maximum volume. Your USB hacked every screen on Earth, broadcasting a global Rickroll. You are now the most wanted internet criminal!",
+                isEnding: true
+            },
+            ending7: {
+                text: "<span class='ending-badge'>Ending 7: Wasted 💀</span><br>He saw your face before you hid. The next day, he gives you an impossible exam that causes you to fail the entire semester. Total Butterfly Effect disaster!",
+                isEnding: true
+            },
+            ending8: {
+                text: "<span class='ending-badge'>Ending 8: Time Traveler ⏳</span><br>The professor looks up, his eyes glowing blue. He yells back: 'I knew it!' Turns out he is a rogue time traveler, and that USB contained the blueprint for the future. You just saved humanity!",
+                isEnding: true
+            }
+        };
+
+        const storyElement = document.getElementById('story');
+        const choicesContainer = document.getElementById('choices');
+
+        function renderState(stateKey) {
+            const state = gameState[stateKey];
+            storyElement.innerHTML = state.text;
+            choicesContainer.innerHTML = '';
+
+            if (state.isEnding) {
+                const restartBtn = document.createElement('button');
+                restartBtn.className = 'btn btn-restart';
+                restartBtn.innerText = '🔄 Play Again';
+                restartBtn.onclick = () => renderState('start');
+                choicesContainer.appendChild(restartBtn);
+            } else {
+                state.choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.className = 'btn';
+                    button.innerText = choice.text;
+                    button.onclick = () => renderState(choice.next);
+                    choicesContainer.appendChild(button);
+                });
+            }
+        }
+
+        renderState('start');
+    </script>
+</body>
+</html>
